@@ -1,0 +1,14 @@
+[2024-03-19T15:45:29.669+0000] {taskinstance.py:1979} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: data_pipeline0.extract_product_id manual__2024-03-19T15:45:19.422261+00:00 [queued]>
+[2024-03-19T15:45:29.709+0000] {taskinstance.py:1979} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: data_pipeline0.extract_product_id manual__2024-03-19T15:45:19.422261+00:00 [queued]>
+[2024-03-19T15:45:29.718+0000] {taskinstance.py:2193} INFO - Starting attempt 1 of 1
+[2024-03-19T15:45:29.804+0000] {taskinstance.py:2217} INFO - Executing <Task(PythonOperator): extract_product_id> on 2024-03-19 15:45:19.422261+00:00
+[2024-03-19T15:45:29.897+0000] {standard_task_runner.py:60} INFO - Started process 20589 to run task
+[2024-03-19T15:45:29.963+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'data_pipeline0', 'extract_product_id', 'manual__2024-03-19T15:45:19.422261+00:00', '--job-id', '26', '--raw', '--subdir', 'DAGS_FOLDER/data_pipeline.py', '--cfg-path', '/tmp/tmpw1q27h7t']
+[2024-03-19T15:45:29.987+0000] {standard_task_runner.py:88} INFO - Job 26: Subtask extract_product_id
+[2024-03-19T15:45:30.399+0000] {task_command.py:423} INFO - Running <TaskInstance: data_pipeline0.extract_product_id manual__2024-03-19T15:45:19.422261+00:00 [running]> on host 4acc31316ec9
+[2024-03-19T15:45:30.614+0000] {taskinstance.py:2513} INFO - Exporting env vars: AIRFLOW_CTX_DAG_EMAIL='maihoangson180602@gmail.com' AIRFLOW_CTX_DAG_OWNER='Hoang Son' AIRFLOW_CTX_DAG_ID='data_pipeline0' AIRFLOW_CTX_TASK_ID='extract_product_id' AIRFLOW_CTX_EXECUTION_DATE='2024-03-19T15:45:19.422261+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2024-03-19T15:45:19.422261+00:00'
+[2024-03-19T15:45:30.624+0000] {logging_mixin.py:188} INFO - 1
+[2024-03-19T15:45:32.839+0000] {python.py:202} INFO - Done. Returned value was: None
+[2024-03-19T15:45:32.890+0000] {taskinstance.py:1149} INFO - Marking task as SUCCESS. dag_id=data_pipeline0, task_id=extract_product_id, execution_date=20240319T154519, start_date=20240319T154529, end_date=20240319T154532
+[2024-03-19T15:45:32.995+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2024-03-19T15:45:33.216+0000] {taskinstance.py:3312} INFO - 0 downstream tasks scheduled from follow-on schedule check
