@@ -39,21 +39,45 @@ last_page = (
 )
 
 product_id = []
+drop_table = """DROP TABLE IF EXISTS PRODUCT_ID_TABLE;"""
+create_product_id_table = """
+        CREATE TABLE PRODUCT_ID_TABLE(ID CHARACTER VARYING);
+                """
+insert_id = """ INSERT INTO PRODUCT_ID_TABLE VALUES(%s); """
 
 
 def main():
-    for i in range(1, 3 + 1):
+    alchemyEngine = create_engine(
+        "postgresql+psycopg2://hoangson:11111@localhost/airflow"
+    )
+    conn = psycopg2.connect(
+        database="airflow",
+        user="hoangson",
+        password="11111",
+        host="localhost",
+        port="5432",
+    )
+    cur = conn.cursor()
+    cur.execute(create_product_id_table)
+    for i in range(1, last_page + 1):
         params["page"] = i
         print(i)
         response = requests.get(url, headers=headers, params=params)
         for record in response.json().get("data"):
             name = record.get("name")
+
             if "combo" in name.lower():
                 continue
-            product_id.append({"id": record.get("id")})
+            id = record.get("id")
+            product_id.append({"id": id})
+            cur.execute(insert_id % id)
+        time.sleep(random.randrange(3, 6))
+    conn.commit()
+    conn.close()
+    cur.close()
 
     df = pd.DataFrame(product_id)
-    df.to_csv("product_id.csv", index=False)
+    print(df)
 
 
 if __name__ == "__main__":

@@ -78,8 +78,8 @@ def parser_product(json):
     return record
 
 
-drop_table = """DROP TABLE IF EXISTS  product_data;"""
-create_data_table = """CREATE TABLE IF NOT EXISTS product_data(
+drop_table = """DROP TABLE IF EXISTS  product_data_info;"""
+create_data_table = """CREATE TABLE product_data_info(
                         id bigserial NOT NULL,
                         product_id character varying NOT NULL,
                         sku character varying NOT NULL,
@@ -97,7 +97,7 @@ create_data_table = """CREATE TABLE IF NOT EXISTS product_data(
                         PRIMARY KEY (id)
 
 );"""
-insert_data_toTable = """INSERT INTO product_data values(DEFAULT,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) ;"""
+insert_data_toTable = """INSERT INTO product_data_info values(DEFAULT,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) ;"""
 
 product_data = []
 fail_id = []
@@ -108,39 +108,41 @@ p_ids = df_id.id.to_list()
 
 def main():
     alchemyEngine = create_engine(
-        "postgresql+psycopg2://hoangson:{}@localhost/airflow"
+        "postgresql+psycopg2://hoangson:11111@localhost/airflow"
     )
     dbConnection = alchemyEngine.connect()
 
     conn = psycopg2.connect(
         database="airflow",
         user="hoangson",
-        password="",
+        password="11111",
         host="localhost",
         port="5432",
     )
     cur = conn.cursor()
     cur.execute(drop_table)
     cur.execute(create_data_table)
-    book_id = pd.read_sql(" SELECT * FROM product", dbConnection)
-    id_list = book_id.product_id.to_list()
-    faile_id = []
+    book_id = pd.read_sql(" SELECT * FROM product_id_table", dbConnection)
+    id_list = book_id.id.to_list()
+    print(len(id_list))
 
     id_list = list(dict.fromkeys(id_list))  # remove duplicate product_id
+    print("the second: ", len(id_list))
+    while len(id_list) > 0:
+        for id in id_list:
+            response = requests.get(
+                url=url.format(id), headers=headers, params=params, cookies=cookies
+            )
+            if response.status_code == 200:
+                try:
+                    prod = parser_product(response.json())
+                    cur.execute(insert_data_toTable, prod)
+                    print(prod)
+                    id_list.remove(id)
+                except Exception as e:
+                    print(e)
 
-    for id in id_list:
-        response = requests.get(
-            url=url.format(id), headers=headers, params=params, cookies=cookies
-        )
-        if response.status_code == 200:
-            try:
-                prod = parser_product(response.json())
-                cur.execute(insert_data_toTable, prod)
-            except Exception as e:
-                print(e)
-              
-       
-    time.sleep(random.randrange(7, 11))
+    time.sleep(random.randrange(1, 3))
 
     conn.commit()
     conn.close()

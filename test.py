@@ -1,25 +1,12 @@
 import requests
 import pandas as pd
-import snowflake.connector
+import requests
+from sqlalchemy import create_engine
+import psycopg2
+import csv
+import time
+import random
 
-
-
-accounnt = ''
-user = ''
-password = ''
-warehouse = ''
-database = ''
-schema = ''
-
-conn = snowflake.connector.connect(
-    user = user,
-    password = password,
-    account = accounnt,
-    warehouse = warehouse,
-    database = database,
-    schema = schema
-    
-)
 
 url = "https://tiki.vn/api/personalish/v1/blocks/listings"
 headers = {
@@ -52,21 +39,44 @@ last_page = (
 )
 
 product_id = []
+drop_table = """DROP TABLE IF EXISTS PRODUCT_ID_TABLE2;"""
+create_product_id_table = """
+        CREATE TABLE PRODUCT_ID_TABLE2(ID CHARACTER VARYING);
+                """
+insert_id = """ INSERT INTO PRODUCT_ID_TABLE2 VALUES(%s); """
 
 
 def main():
-    for i in range(1, 3 + 1):
+    alchemyEngine = create_engine(
+        "postgresql+psycopg2://hoangson:11111@localhost/airflow"
+    )
+    conn = psycopg2.connect(
+        database="airflow",
+        user="hoangson",
+        password="11111",
+        host="localhost",
+        port="5432",
+    )
+    cur = conn.cursor()
+    cur.execute(create_product_id_table)
+    for i in range(1, 1 + 1):
         params["page"] = i
         print(i)
         response = requests.get(url, headers=headers, params=params)
         for record in response.json().get("data"):
             name = record.get("name")
+
             if "combo" in name.lower():
                 continue
-            product_id.append({"id": record.get("id")})
+            id = record.get("id")
+            product_id.append({"id": id})
+            cur.execute(insert_id % id)
+    conn.commit()
+    conn.close()
+    cur.close()
 
     df = pd.DataFrame(product_id)
-    df.to_csv("product_id.csv", index=False)
+    print(df)
 
 
 if __name__ == "__main__":

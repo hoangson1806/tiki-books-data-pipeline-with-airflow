@@ -1,19 +1,20 @@
 import pandas as pd
 from sqlalchemy import create_engine
 import psycopg2
+import snowflake.connector
+from snowflake.connector.pandas_tools import write_pandas
 
 
 def transform(df_book_products):
 
-    df_book_products["category_id"] = df_book_products["category_id"]
     df_fact = df_book_products[
         [
             "product_id",
-            "category_id",
+            "categories_id",
             "sku",
             "quantity_sold",
             "price",
-            "original_price",
+            "orginal_price",
             "discount",
             "discount_rate",
         ]
@@ -28,17 +29,19 @@ def main():
         "postgresql+psycopg2://hoangson:11111@localhost/airflow"
     )
     dbConnect = alchemyEngine.connect()
-    conn = psycopg2.connect(
-        database="airflow",
-        user="hoangson",
-        password="11111",
-        host="localhost",
-        port=5432,
+    conn = snowflake.connector.connect(
+        user="HOANGSONSNOWFLAKE",
+        account="mjmpxrl-ai52284",
+        password="Hoangson123@#",
+        warehouse="COMPUTE_WH",
+        database="MY_DB",
+        schema="PUBLIC",
     )
+
     cur = conn.cursor()
-    df_product = transform(pd.read_sql("select * from PRODUCT_DATA_DATA", dbConnect))
+    df_product = transform(pd.read_sql("select * from PRODUCT_DATA_INFO", dbConnect))
     print(df_product)
-    df_product.to_sql("fact_table", alchemyEngine, if_exists="append", index=False)
+    write_pandas(conn, df_product, table_name="FACT_TABLE", quote_identifiers=False)
 
     conn.commit()
     conn.close()

@@ -1,31 +1,25 @@
-import pandas as pd
-from sqlalchemy import create_engine
-import psycopg2
-
+import snowflake.connector
 
 drop_dim_table = """
             DROP TABLE IF EXISTS DIM_CATEGORY_TABLE;
 """
 create_dim_category_table = """
     CREATE TABLE IF NOT EXISTS DIM_CATEGORY_TABLE (
-        category_id INT NOT NULL, 
+        categories_id INT NOT NULL, 
         category VARCHAR(1000),
-        PRIMARY KEY(category_id)
+        PRIMARY KEY(categories_id)
     );
 """
 
 
 def main():
-    alchemyEngine = create_engine(
-        "postgresql+psycopg2://hoangson:11111@localhost/airflow"
-    )
-    dbConnection = alchemyEngine.connect()
-    conn = psycopg2.connect(
-        database="airflow",
-        user="hoangson",
-        password="1111",
-        host="localhost",
-        port="5432",
+    conn = snowflake.connector.connect(
+        user="HOANGSONSNOWFLAKE",
+        password="Hoangson123@#",
+        account="mjmpxrl-ai52284",
+        warehouse="COMPUTE_WH",
+        database="MY_DB",
+        schema="PUBLIC",
     )
     cur = conn.cursor()
     cur.execute(drop_dim_table)
