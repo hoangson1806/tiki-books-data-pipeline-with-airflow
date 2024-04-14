@@ -1,5 +1,11 @@
 import requests
 import pandas as pd
+import requests
+from sqlalchemy import create_engine
+import psycopg2
+import csv
+import time
+import random
 
 
 url = "https://tiki.vn/api/personalish/v1/blocks/listings"
@@ -36,7 +42,7 @@ product_id = []
 
 
 def main():
-    for i in range(1, 1 + 1):
+    for i in range(1, 3 + 1):
         params["page"] = i
         print(i)
         response = requests.get(url, headers=headers, params=params)
@@ -47,7 +53,7 @@ def main():
             product_id.append({"id": record.get("id")})
 
     df = pd.DataFrame(product_id)
-    df.to_csv("product_iiiiid.csv", index=False)
+    df.to_csv("product_id.csv", index=False)
 
 
 if __name__ == "__main__":

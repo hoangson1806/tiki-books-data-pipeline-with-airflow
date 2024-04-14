@@ -1,0 +1,26 @@
+[2024-03-25T14:12:50.441+0000] {processor.py:161} INFO - Started process (PID=168) to work on /opt/airflow/dags/data_pipeline.py
+[2024-03-25T14:12:50.446+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/data_pipeline.py for tasks to queue
+[2024-03-25T14:12:50.452+0000] {logging_mixin.py:188} INFO - [2024-03-25T14:12:50.451+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/data_pipeline.py
+[2024-03-25T14:13:00.217+0000] {logging_mixin.py:188} INFO - [2024-03-25T14:13:00.199+0000] {dagbag.py:350} ERROR - Failed to import: /opt/airflow/dags/data_pipeline.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/models/dagbag.py", line 346, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 843, in exec_module
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "/opt/airflow/dags/data_pipeline.py", line 9, in <module>
+    import scripts.extract_product_data
+  File "/opt/airflow/dags/scripts/extract_product_data.py", line 105, in <module>
+    df_id = pd.read_csv("product_id.csv")
+  File "/home/airflow/.local/lib/python3.8/site-packages/pandas/io/parsers/readers.py", line 912, in read_csv
+    return _read(filepath_or_buffer, kwds)
+  File "/home/airflow/.local/lib/python3.8/site-packages/pandas/io/parsers/readers.py", line 577, in _read
+    parser = TextFileReader(filepath_or_buffer, **kwds)
+  File "/home/airflow/.local/lib/python3.8/site-packages/pandas/io/parsers/readers.py", line 1407, in __init__
+    self._engine = self._make_engine(f, self.engine)
+  File "/home/airflow/.local/lib/python3.8/site-packages/pandas/io/parsers/readers.py", line 1661, in _make_engine
+    self.handles = get_handle(
+  File "/home/airflow/.local/lib/python3.8/site-packages/pandas/io/common.py", line 859, in get_handle
+    handle = open(
+FileNotFoundError: [Errno 2] No such file or directory: 'product_id.csv'
+[2024-03-25T14:13:00.223+0000] {processor.py:842} WARNING - No viable dags retrieved from /opt/airflow/dags/data_pipeline.py
+[2024-03-25T14:13:00.311+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/data_pipeline.py took 9.879 seconds

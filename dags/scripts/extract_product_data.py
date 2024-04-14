@@ -108,14 +108,14 @@ p_ids = df_id.id.to_list()
 
 def main():
     alchemyEngine = create_engine(
-        "postgresql+psycopg2://hoangson:11111@localhost/airflow"
+        "postgresql+psycopg2://hoangson:{}@localhost/airflow"
     )
     dbConnection = alchemyEngine.connect()
 
     conn = psycopg2.connect(
         database="airflow",
         user="hoangson",
-        password="1111",
+        password="",
         host="localhost",
         port="5432",
     )
@@ -138,9 +138,8 @@ def main():
                 cur.execute(insert_data_toTable, prod)
             except Exception as e:
                 print(e)
-                print(response.content)
-                cur.execute(insert_data_toTable, prod)
-        print(id)
+              
+       
     time.sleep(random.randrange(7, 11))
 
     conn.commit()
